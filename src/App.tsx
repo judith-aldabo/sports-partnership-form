@@ -6,7 +6,7 @@ const BACKEND_URL = "https://sports-inbound-backend.onrender.com"
 
 const SPORTS = [
   "Formula 1", "Cycling", "Running", "Triathlon", "Swimming",
-  "Tennis", "Golf", "Basketball", "Football (Soccer)", "American Football",
+  "Tennis", "Padel", "Golf", "Basketball", "Football (Soccer)", "American Football",
   "Baseball", "Hockey", "MMA / Boxing", "Skiing / Snowboarding",
   "Surfing", "CrossFit", "Weightlifting", "Gymnastics",
   "Track & Field", "Esports", "Other"
@@ -107,9 +107,8 @@ function App() {
 
   const pages = [
     { title: "About You", subtitle: "Tell us who you are" },
-    { title: "The Athlete", subtitle: "Who are we talking about?" },
-    { title: "The Proposal", subtitle: "What do you have in mind?" },
-    { title: "Details & Timeline", subtitle: "Help us understand the scope" }
+    { title: "The Athlete / Team", subtitle: "Who should we know about?" },
+    { title: "The Opportunity", subtitle: "What does a partnership look like?" }
   ]
 
   const totalPages = pages.length
@@ -145,11 +144,7 @@ function App() {
       if (!formData.partnershipType) newErrors.partnershipType = 'Please select a partnership type'
       if (formData.partnershipType === 'Other' && !formData.partnershipOther.trim()) newErrors.partnershipOther = 'Please specify the partnership type'
       if (!formData.proposalSummary.trim()) newErrors.proposalSummary = 'Please provide a brief proposal summary'
-    }
-
-    if (page === 3) {
       if (!formData.market) newErrors.market = 'Please select a market'
-      if (!formData.sleptOnPod) newErrors.sleptOnPod = 'Please select an option'
     }
 
     setErrors(newErrors)
@@ -304,10 +299,10 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30" />
             <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 max-w-4xl mx-auto">
               <h1 className="text-3xl sm:text-4xl font-bold mb-2 sm:mb-3">
-                Partnership & Sponsorship Inquiry
+                Sports Partnership Inquiry
               </h1>
               <p className="text-zinc-400 text-sm sm:text-lg max-w-2xl">
-                Sleep is where performance is built. Tell us about yourself and your proposal, and we'll take it from there.
+                Recovery starts with sleep. Tell us about yourself and the athlete or team, and we'll take it from there.
               </p>
             </div>
           </div>
@@ -475,10 +470,26 @@ function App() {
                     <option value="1M+">1M+</option>
                   </select>
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-zinc-300 mb-2">
+                    Has the athlete / team used an Eight Sleep Pod?
+                  </label>
+                  <select
+                    value={formData.sleptOnPod}
+                    onChange={(e) => updateField('sleptOnPod', e.target.value)}
+                    className={selectClass('sleptOnPod')}
+                  >
+                    <option value="" disabled>Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                    <option value="Not sure">Not sure</option>
+                  </select>
+                </div>
               </div>
             )}
 
-            {/* Page 3: The Proposal */}
+            {/* Page 3: The Opportunity (merged from old pages 3+4) */}
             {currentPage === 2 && (
               <div className="space-y-6">
                 <div>
@@ -516,16 +527,51 @@ function App() {
 
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-2">
-                    Proposal summary <span className="text-red-400">*</span>
+                    What does this partnership look like? <span className="text-red-400">*</span>
                   </label>
                   <textarea
                     value={formData.proposalSummary}
                     onChange={(e) => updateField('proposalSummary', e.target.value)}
-                    placeholder="Describe what you have in mind. What would a partnership look like? What value would it create for both sides?"
-                    rows={5}
+                    placeholder="Describe your proposal: what would a partnership include, and what value does it create for both sides?"
+                    rows={4}
                     className={`${inputClass('proposalSummary')} resize-none`}
                   />
                   {errors.proposalSummary && <p className="text-red-400 text-xs mt-1">{errors.proposalSummary}</p>}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-300 mb-2">
+                      Market <span className="text-red-400">*</span>
+                    </label>
+                    <select
+                      value={formData.market}
+                      onChange={(e) => updateField('market', e.target.value)}
+                      className={selectClass('market')}
+                    >
+                      <option value="" disabled>Select market</option>
+                      {MARKETS.map(m => (
+                        <option key={m} value={m}>{m}</option>
+                      ))}
+                    </select>
+                    {errors.market && <p className="text-red-400 text-xs mt-1">{errors.market}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-300 mb-2">
+                      Timeline
+                    </label>
+                    <select
+                      value={formData.timeline}
+                      onChange={(e) => updateField('timeline', e.target.value)}
+                      className={selectClass('timeline')}
+                    >
+                      <option value="" disabled>Select timeline</option>
+                      {TIMELINE_OPTIONS.map(t => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -535,83 +581,28 @@ function App() {
                   <textarea
                     value={formData.previousPartnerships}
                     onChange={(e) => updateField('previousPartnerships', e.target.value)}
-                    placeholder="List any notable brand partnerships or sponsorships (past or current)"
-                    rows={3}
+                    placeholder="Notable brand partnerships or sponsorships (past or current)"
+                    rows={2}
                     className={`${inputClass('previousPartnerships')} resize-none`}
                   />
                 </div>
-              </div>
-            )}
-
-            {/* Page 4: Details & Timeline */}
-            {currentPage === 3 && (
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-2">
-                    Market <span className="text-red-400">*</span>
-                  </label>
-                  <select
-                    value={formData.market}
-                    onChange={(e) => updateField('market', e.target.value)}
-                    className={selectClass('market')}
-                  >
-                    <option value="" disabled>Select market</option>
-                    {MARKETS.map(m => (
-                      <option key={m} value={m}>{m}</option>
-                    ))}
-                  </select>
-                  {errors.market && <p className="text-red-400 text-xs mt-1">{errors.market}</p>}
-                </div>
 
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-2">
-                    Has the athlete / team slept on an Eight Sleep Pod before? <span className="text-red-400">*</span>
-                  </label>
-                  <select
-                    value={formData.sleptOnPod}
-                    onChange={(e) => updateField('sleptOnPod', e.target.value)}
-                    className={selectClass('sleptOnPod')}
-                  >
-                    <option value="" disabled>Select</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                    <option value="Not sure">Not sure</option>
-                  </select>
-                  {errors.sleptOnPod && <p className="text-red-400 text-xs mt-1">{errors.sleptOnPod}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-2">
-                    Timeline
-                  </label>
-                  <select
-                    value={formData.timeline}
-                    onChange={(e) => updateField('timeline', e.target.value)}
-                    className={selectClass('timeline')}
-                  >
-                    <option value="" disabled>Select timeline</option>
-                    {TIMELINE_OPTIONS.map(t => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-2">
-                    Anything else we should know?
+                    Anything else?
                   </label>
                   <textarea
                     value={formData.additionalNotes}
                     onChange={(e) => updateField('additionalNotes', e.target.value)}
-                    placeholder="Additional context, links, attachments, or questions"
-                    rows={4}
+                    placeholder="Links, context, or questions"
+                    rows={2}
                     className={`${inputClass('additionalNotes')} resize-none`}
                   />
                 </div>
 
                 {/* Summary preview */}
-                <div className="mt-8 border border-zinc-800 rounded-xl p-6 bg-zinc-950">
-                  <h4 className="text-sm font-medium text-zinc-400 mb-4 uppercase tracking-wider">Submission Preview</h4>
+                <div className="mt-6 border border-zinc-800 rounded-xl p-6 bg-zinc-950">
+                  <h4 className="text-sm font-medium text-zinc-400 mb-4 uppercase tracking-wider">Summary</h4>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-zinc-500">Name</span>
@@ -626,7 +617,7 @@ function App() {
                       <span className="text-zinc-200">{formData.sport === 'Other' ? formData.sportOther : formData.sport}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-zinc-500">Athlete</span>
+                      <span className="text-zinc-500">Athlete / Team</span>
                       <span className="text-zinc-200">{formData.athleteName}</span>
                     </div>
                     <div className="flex justify-between">
@@ -637,18 +628,6 @@ function App() {
                       <div className="flex justify-between">
                         <span className="text-zinc-500">Market</span>
                         <span className="text-zinc-200">{formData.market}</span>
-                      </div>
-                    )}
-                    {formData.sleptOnPod && (
-                      <div className="flex justify-between">
-                        <span className="text-zinc-500">Slept on Pod?</span>
-                        <span className="text-zinc-200">{formData.sleptOnPod}</span>
-                      </div>
-                    )}
-                    {formData.timeline && (
-                      <div className="flex justify-between">
-                        <span className="text-zinc-500">Timeline</span>
-                        <span className="text-zinc-200">{formData.timeline}</span>
                       </div>
                     )}
                   </div>
