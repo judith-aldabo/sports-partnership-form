@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import { ChevronRight, ChevronLeft, Check, Send } from 'lucide-react'
 
-const BACKEND_URL = "https://app-fsoqjwmi.fly.dev"
+const BACKEND_URL = "https://sports-inbound-backend.onrender.com"
 
 const SPORTS = [
   "Formula 1", "Cycling", "Running", "Triathlon", "Swimming",
